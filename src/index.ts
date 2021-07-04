@@ -3,15 +3,14 @@ import express from "express";
 import { Request, Response } from "express";
 import { createConnection } from "typeorm";
 import { Search } from "./entity/Search";
-import { getTrending, logSearch } from "./search";
-import { SearchMovies } from "./api-client";
+import { getTrending, logSearch, searchMovies } from "./search";
 
 require("dotenv").config();
+export const app = express();
 
 createConnection()
   .then((connection) => {
     const repository = connection.getRepository(Search);
-    const app = express();
     const PORT = process.env.EXPRESS_PORT;
 
     app.use(express.json());
@@ -19,9 +18,11 @@ createConnection()
     app.get("/search", async function (req: Request, res: Response) {
       const term = <string>req.query.q;
       if (!term) {
-        res.send("Please provide a search term. Example: ?q=terminator");
+        res
+          .status(400)
+          .send("Please provide a search term. Example: ?q=terminator");
       } else {
-        const movies = await SearchMovies(term);
+        const movies = await searchMovies(term);
         logSearch(repository, term, movies.total_results);
         return res.json(movies);
       }
@@ -35,5 +36,6 @@ createConnection()
     if (process.env.NODE_ENV !== "test") {
       app.listen(PORT);
     }
+    module.exports = app;
   })
   .catch((error) => console.log(error));

@@ -4,8 +4,9 @@
   "description": "The Movie Database API client",
   "scripts": {
     "build": "tsc",
+    "lint": "prettier --check src/**/*.ts",
     "start": "nodemon src/index.ts",
-    "test": "cross-env NODE_ENV=test jest"
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles"
   },
   "author": "Anders Ytterström",
   "license": "ISC",
@@ -31,6 +32,9 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "__tests__/helpers"
+    ]
   }
 }
