@@ -1,0 +1,15 @@
+# Use postgres/example user/password credentials
+version: "3.1"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_user: tmdb
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5436:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./initdb.d:/docker-entrypoint-initdb.d
